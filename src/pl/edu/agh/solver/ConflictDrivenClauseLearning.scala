@@ -20,7 +20,6 @@ class ConflictDrivenClauseLearning
     while (toVisit.nonEmpty) {
       val current = toVisit.pop()
       if (current.backtrack > 0) {
-        println(current.depth - current.backtrack)
         toVisit = toVisit.filter(_.depth <= current.backtrack) //Usuwane są stany "młodsze" niż docelowy poziom nawrotu.
       }
       else {
