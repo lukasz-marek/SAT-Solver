@@ -1,4 +1,4 @@
-import pl.edu.agh.parser.structures.ImplicationFormula
+import pl.edu.agh.parser.structures.OrFormula
 
 /**
   * Created by lmarek on 21.04.2016.
@@ -20,7 +20,7 @@ object Main {
     println("Results:")
     println(solver.satisfiable)*/
 
-    val test = new ImplicationFormula("a", "b")
-    println(test.asAlternative.asConjunction)
+    val test = new OrFormula("(a&&b)", "c")
+    println(test.distribution)
   }
 }

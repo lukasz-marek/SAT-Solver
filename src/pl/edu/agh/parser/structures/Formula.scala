@@ -50,12 +50,12 @@ abstract class Formula {
 }
 
 abstract class TwoArgFormula(part1: String, part2: String) extends Formula {
-  protected var leftSide = analyze(part1)
-  protected var rightSide = analyze(part2)
+  var leftSide = analyze(part1)
+  var rightSide = analyze(part2)
 }
 
 abstract class SingleFormula(formula: String) extends Formula {
-  protected var inside = analyze(formula)
+  var inside = analyze(formula)
 
   override def literal = inside match {
     case VariableFormula(_) => true
@@ -67,18 +67,32 @@ case class OrFormula(part1: String, part2: String) extends TwoArgFormula(part1, 
   def asConjunction = new NegationFormula("(~(" + leftSide + "))&&~(" + rightSide + ")").simplify
 
   override def toString = "(" + leftSide.toString + ")||(" + rightSide.toString + ")"
+
+  def distribution = {
+    if (leftSide.isInstanceOf[AndFormula]) {
+      val left = leftSide.asInstanceOf[AndFormula]
+      new AndFormula("(" + rightSide + ")||(" + left.leftSide + ")", "(" + rightSide + ")||(" + left.rightSide + ")")
+    } else if (rightSide.isInstanceOf[AndFormula]) {
+      val right = rightSide.asInstanceOf[AndFormula]
+      new AndFormula("(" + leftSide + ")||(" + right.leftSide + ")", "(" + leftSide + ")||(" + right.rightSide + ")")
+    }
+    else this
+  }
+
 }
 
 case class AndFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
   def asAlternative = new NegationFormula("(~(" + leftSide + "))||~(" + rightSide + ")").simplify
 
   override def toString = "(" + leftSide.toString + ")&&(" + rightSide.toString + ")"
+
 }
 
 case class IffFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
   def asConjunction = new AndFormula("(" + leftSide + ")=>" + part2, "(" + rightSide + ")=>" + part1)
 
   override def toString = "(" + leftSide.toString + ")<=>(" + rightSide.toString + ")"
+
 }
 
 case class ImplicationFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
@@ -91,8 +105,10 @@ case class NegationFormula(formula: String) extends SingleFormula(formula) {
   def simplify: Formula = inside match {
     case NegationFormula(_) => {
       val next = inside.asInstanceOf[NegationFormula].inside
-      if (next.isInstanceOf[NegationFormula]) next.asInstanceOf[NegationFormula].simplify
-      else next
+      next match {
+        case formula1: NegationFormula => formula1.simplify
+        case _ => next
+      }
     }
     case _ => this
   }
