@@ -1,5 +1,4 @@
-import pl.edu.agh.parser.ConjunctiveNormalFormParser
-import pl.edu.agh.solver.ConflictDrivenClauseLearning
+import pl.edu.agh.parser.structures.ImplicationFormula
 
 /**
   * Created by lmarek on 21.04.2016.
@@ -7,7 +6,7 @@ import pl.edu.agh.solver.ConflictDrivenClauseLearning
 object Main {
 
   def main(args: Array[String]): Unit = {
-    lazy val query = StringBuilder.newBuilder
+    /*lazy val query = StringBuilder.newBuilder
     var limit = 20000
     query.append("-1")
     while (limit >= 0) {
@@ -19,6 +18,9 @@ object Main {
     val clauses = parser.parse(test)
     val solver = new ConflictDrivenClauseLearning(clauses)
     println("Results:")
-    println(solver.satisfiable)
+    println(solver.satisfiable)*/
+
+    val test = new ImplicationFormula("a", "b")
+    println(test.asAlternative.asConjunction)
   }
 }
