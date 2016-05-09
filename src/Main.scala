@@ -1,4 +1,4 @@
-import pl.edu.agh.parser.structures.OrFormula
+import pl.edu.agh.parser.structures.RootFormula
 
 /**
   * Created by lmarek on 21.04.2016.
@@ -19,8 +19,8 @@ object Main {
     val solver = new ConflictDrivenClauseLearning(clauses)
     println("Results:")
     println(solver.satisfiable)*/
-
-    val test = new OrFormula("(a&&b)", "c")
-    println(test.distribution)
+    val test = new RootFormula("(a<=>b)&&c")
+    test.convertToCNF()
+    println(test)
   }
 }

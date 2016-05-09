@@ -5,7 +5,6 @@ package pl.edu.agh.parser.structures
   */
 abstract class Formula {
   def literal = false
-
   final def analyze(formula: String): Formula = {
     if (formula.matches("[a-zA-Z0-9]*"))
       return new VariableFormula(formula)
@@ -47,11 +46,44 @@ abstract class Formula {
     analyze(formula.substring(1, formula.length - 1))
   }
 
+  def convertToCNF(): Unit = {}
 }
 
 abstract class TwoArgFormula(part1: String, part2: String) extends Formula {
   var leftSide = analyze(part1)
   var rightSide = analyze(part2)
+
+  override def convertToCNF() {
+    leftSide match {
+      case x: NegationFormula => {
+        val current = x.simplify
+        current match {
+          case y: NegationFormula => leftSide = y.diveInNegation; leftSide.convertToCNF()
+          case _ => leftSide = current; leftSide.convertToCNF()
+        }
+      }
+      case x: AndFormula => /*leftSide = x.deMorgan*/ ; leftSide.convertToCNF()
+      case x: OrFormula => leftSide = x.distribution; leftSide.convertToCNF()
+      case x: IffFormula => leftSide = x.asConjunction; leftSide.convertToCNF()
+      case x: ImplicationFormula => leftSide = x.asAlternative; leftSide.convertToCNF()
+      case _ => leftSide.convertToCNF()
+    }
+    leftSide.convertToCNF()
+    rightSide match {
+      case x: NegationFormula => {
+        val current = x.simplify
+        current match {
+          case y: NegationFormula => rightSide = y.diveInNegation; rightSide.convertToCNF()
+          case _ => rightSide = current; rightSide.convertToCNF()
+        }
+      }
+      case x: AndFormula => /*rightSide = x.deMorgan*/ ; rightSide.convertToCNF()
+      case x: OrFormula => rightSide = x.distribution; rightSide.convertToCNF()
+      case x: IffFormula => rightSide = x.asConjunction; rightSide.convertToCNF()
+      case x: ImplicationFormula => rightSide = x.asAlternative; rightSide.convertToCNF()
+      case _ => rightSide.convertToCNF()
+    }
+  }
 }
 
 abstract class SingleFormula(formula: String) extends Formula {
@@ -61,10 +93,24 @@ abstract class SingleFormula(formula: String) extends Formula {
     case VariableFormula(_) => true
     case _ => false
   }
+
+  override def convertToCNF(): Unit = inside match {
+    case x: NegationFormula => {
+      val current = x.simplify
+      current match {
+        case y: NegationFormula => inside = y.diveInNegation; inside.convertToCNF()
+        case _ => inside = current; inside.convertToCNF()
+      }
+    }
+    case x: OrFormula => inside = x.distribution; inside.convertToCNF()
+    case x: ImplicationFormula => inside = x.asAlternative; inside.convertToCNF()
+    case x: IffFormula => inside = x.asConjunction; inside.convertToCNF()
+    case _ => inside.convertToCNF()
+  }
 }
 
 case class OrFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
-  def asConjunction = new NegationFormula("(~(" + leftSide + "))&&~(" + rightSide + ")").simplify
+  def deMorgan = new NegationFormula("(~(" + leftSide + "))&&~(" + rightSide + ")").simplify
 
   override def toString = "(" + leftSide.toString + ")||(" + rightSide.toString + ")"
 
@@ -82,47 +128,62 @@ case class OrFormula(part1: String, part2: String) extends TwoArgFormula(part1, 
 }
 
 case class AndFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
-  def asAlternative = new NegationFormula("(~(" + leftSide + "))||~(" + rightSide + ")").simplify
+  def deMorgan = new NegationFormula("(~(" + leftSide + "))||~(" + rightSide + ")").simplify
 
-  override def toString = "(" + leftSide.toString + ")&&(" + rightSide.toString + ")"
+  override def toString = "(" + leftSide + ")&&(" + rightSide + ")"
 
 }
 
 case class IffFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
   def asConjunction = new AndFormula("(" + leftSide + ")=>" + part2, "(" + rightSide + ")=>" + part1)
 
-  override def toString = "(" + leftSide.toString + ")<=>(" + rightSide.toString + ")"
+  override def toString = "(" + leftSide + ")<=>(" + rightSide + ")"
 
 }
 
 case class ImplicationFormula(part1: String, part2: String) extends TwoArgFormula(part1, part2) {
   def asAlternative = new OrFormula("~(" + leftSide + ")", rightSide.toString)
 
-  override def toString = "(" + leftSide.toString + ")=>(" + rightSide.toString + ")"
+  override def toString = "(" + leftSide + ")=>(" + rightSide + ")"
+
 }
 
 case class NegationFormula(formula: String) extends SingleFormula(formula) {
   def simplify: Formula = inside match {
-    case NegationFormula(_) => {
-      val next = inside.asInstanceOf[NegationFormula].inside
-      next match {
-        case formula1: NegationFormula => formula1.simplify
-        case _ => next
-      }
-    }
+    case x: NegationFormula => x.inside
+    case _ => this
+  }
+
+  def diveInNegation = inside match {
+    case inner: OrFormula => new NegationFormula(inner.deMorgan.toString).simplify
+    case inner: AndFormula => new NegationFormula(inner.deMorgan.toString).simplify
+
     case _ => this
   }
 
   override def toString = "~(" + inside.toString + ")"
+
+
 }
 
 case class RootFormula(formula: String) extends SingleFormula(formula: String) {
   override def toString = inside.toString
+
+  override def convertToCNF(): Unit = {
+    var first = toString
+    super.convertToCNF()
+    var second = toString
+    while (first != second) {
+      second = first
+      super.convertToCNF()
+      first = toString
+    }
+  }
+
 }
 
 case class VariableFormula(formula: String) extends Formula {
   override def literal = true
-
   override def toString = formula
 }
 
