@@ -157,6 +157,8 @@ case class NegationFormula(formula: String) extends SingleFormula(formula) {
   def diveInNegation = inside match {
     case inner: OrFormula => new NegationFormula(inner.deMorgan.toString).simplify
     case inner: AndFormula => new NegationFormula(inner.deMorgan.toString).simplify
+    case inner: ImplicationFormula => new NegationFormula(inner.asAlternative.deMorgan.toString).simplify
+    case inner: IffFormula => new NegationFormula(inner.asConjunction.deMorgan.toString).simplify
     case _ => this
   }
 

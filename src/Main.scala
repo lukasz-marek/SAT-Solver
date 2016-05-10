@@ -1,5 +1,6 @@
-import pl.edu.agh.parser.ConversionPostprocessor
 import pl.edu.agh.parser.structures.RootFormula
+import pl.edu.agh.parser.{ConjunctiveNormalFormParser, ConversionPostprocessor}
+import pl.edu.agh.solver.ConflictDrivenClauseLearning
 
 /**
   * Created by lmarek on 21.04.2016.
@@ -20,8 +21,17 @@ object Main {
     val solver = new ConflictDrivenClauseLearning(clauses)
     println("Results:")
     println(solver.satisfiable)*/
-    val test = new RootFormula("(h=>(g=>(f=>((d=>((a=>b)=>c))=>e))))=>i")
+    val formula = "(((e<=>f)<=>(g<=>h))<=>((a<=>b)<=>(c<=>d)))"
+    val test = new RootFormula(formula)
     test.convertToCNF()
-    println(new ConversionPostprocessor(test.toString).postprocess)
+    val cnf = new ConversionPostprocessor().postprocess(test.toString)
+    println(cnf)
+    println("Satisfiable: " + new ConflictDrivenClauseLearning(new ConjunctiveNormalFormParser().parse(cnf)).satisfiable)
+    val negated = new RootFormula("~(" + formula + ")")
+    negated.convertToCNF()
+    val negatedCNF = new ConversionPostprocessor().postprocess(negated.toString)
+    println(negatedCNF)
+    println("Tautology: " + !new ConflictDrivenClauseLearning(new ConjunctiveNormalFormParser().parse(negatedCNF)).satisfiable)
+
   }
 }
