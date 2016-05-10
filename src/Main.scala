@@ -1,3 +1,4 @@
+import pl.edu.agh.parser.ConversionPostprocessor
 import pl.edu.agh.parser.structures.RootFormula
 
 /**
@@ -19,8 +20,8 @@ object Main {
     val solver = new ConflictDrivenClauseLearning(clauses)
     println("Results:")
     println(solver.satisfiable)*/
-    val test = new RootFormula("(a<=>b)&&c")
+    val test = new RootFormula("(h=>(g=>(f=>((d=>((a=>b)=>c))=>e))))=>i")
     test.convertToCNF()
-    println(test)
+    println(new ConversionPostprocessor(test.toString).postprocess)
   }
 }
