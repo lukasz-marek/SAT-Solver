@@ -1,4 +1,4 @@
-package pl.edu.agh.data.reasoning.structures
+package pl.edu.agh.solver.algorithm.types
 
 /**
   * Created by lmarek on 21.04.2016.

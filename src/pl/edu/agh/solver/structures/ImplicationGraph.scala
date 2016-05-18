@@ -1,4 +1,6 @@
-package pl.edu.agh.data.reasoning.structures
+package pl.edu.agh.solver.structures
+
+import pl.edu.agh.solver.algorithm.types.Literal
 
 /**
   * Created by lmarek on 03.05.2016.

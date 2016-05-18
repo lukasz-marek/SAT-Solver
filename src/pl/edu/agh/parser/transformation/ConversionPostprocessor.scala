@@ -1,4 +1,4 @@
-package pl.edu.agh.parser
+package pl.edu.agh.parser.transformation
 
 /**
   * Created by lmarek on 10.05.2016.

@@ -1,6 +1,6 @@
-package pl.edu.agh.parser
+package pl.edu.agh.parser.transformation
 
-import pl.edu.agh.data.reasoning.structures.Literal
+import pl.edu.agh.solver.algorithm.types.Literal
 
 /**
   * Created by lmarek on 22.04.2016.

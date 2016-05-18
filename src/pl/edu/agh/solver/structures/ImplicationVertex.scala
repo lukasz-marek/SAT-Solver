@@ -1,4 +1,4 @@
-package pl.edu.agh.data.reasoning.structures
+package pl.edu.agh.solver.structures
 
 /**
   * Created by lmarek on 03.05.2016.

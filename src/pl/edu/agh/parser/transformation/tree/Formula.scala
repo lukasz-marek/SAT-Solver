@@ -1,4 +1,4 @@
-package pl.edu.agh.parser.structures
+package pl.edu.agh.parser.transformation.tree
 
 /**
   * Created by lmarek on 07.05.2016.
@@ -45,7 +45,6 @@ abstract class Formula {
     }
     analyze(formula.substring(1, formula.length - 1))
   }
-
   def convertToCNF(): Unit = {}
 }
 
@@ -145,7 +144,6 @@ case class ImplicationFormula(part1: String, part2: String) extends TwoArgFormul
   def asAlternative = new OrFormula("~(" + leftSide + ")", rightSide.toString)
 
   override def toString = "(" + leftSide + ")=>(" + rightSide + ")"
-
 }
 
 case class NegationFormula(formula: String) extends SingleFormula(formula) {
@@ -164,10 +162,9 @@ case class NegationFormula(formula: String) extends SingleFormula(formula) {
 
   override def toString = "~(" + inside.toString + ")"
 
-
 }
 
-case class RootFormula(formula: String) extends SingleFormula(formula: String) {
+class RootFormula(formula: String) extends SingleFormula(formula: String) {
   override def toString = inside.toString
 
   override def convertToCNF(): Unit = {
@@ -180,13 +177,13 @@ case class RootFormula(formula: String) extends SingleFormula(formula: String) {
       first = toString
     }
   }
-
 }
 
 case class VariableFormula(formula: String) extends Formula {
   override def literal = true
   override def toString = formula
 }
+
 
 
 

@@ -1,19 +1,22 @@
-package pl.edu.agh.solver
+package pl.edu.agh.solver.algorithm
 
-import pl.edu.agh.data.reasoning.structures.{ImplicationGraph, Literal, TripleValueBoolean}
+import pl.edu.agh.solver.algorithm.types.{Literal, TripleValueBoolean}
+import pl.edu.agh.solver.structures.ImplicationGraph
 
 import scala.collection.mutable
 
 /**
   * Created by lmarek on 30.04.2016.
   */
-class ConflictDrivenClauseLearning
-(clauses: mutable.Set[List[Literal]],
- protected val assignments: Map[String, (Boolean, Long, Option[List[String]])] = Map(),
- protected val depth: Long = 0
-) extends Solver {
+final class ConflictDrivenClauseLearning
+(private val clauses: mutable.Set[List[Literal]],
+ private val assignments: Map[String, (Boolean, Long, Option[List[String]])] = Map(),
+ private val depth: Long = 0
+) {
 
-  override def satisfiable: Boolean = {
+  lazy val isSatisfiable = satisfiable
+
+  private def satisfiable: Boolean = {
     var toVisit = mutable.Stack[ConflictDrivenClauseLearning]()
     toVisit.push(this)
     val sat = mutable.Set[Map[String, TripleValueBoolean]]()
@@ -38,7 +41,7 @@ class ConflictDrivenClauseLearning
     false
   }
 
-  protected lazy val next: Option[String] = {
+  private lazy val next: Option[String] = {
     val toGo = (clauses.flatten.map(_.name) -- newAssignments.keys).toList
     val assess = mutable.Map[String, Long]()
     toGo.foreach(variable => {
@@ -53,7 +56,7 @@ class ConflictDrivenClauseLearning
     else Option(toGo.sortWith((x, y) => assess.get(x).get > assess.get(y).get).head)
   }
 
-  protected def left = {
+  private def left = {
     if (next.isEmpty)
       None
     else {
@@ -70,7 +73,7 @@ class ConflictDrivenClauseLearning
     }
   }
 
-  protected def right = {
+  private def right = {
     if (next.isEmpty)
       None
     else {
@@ -90,11 +93,11 @@ class ConflictDrivenClauseLearning
   /*
   -1 jeśli backtracking nie następuje, w przeciwnym razie x > 0
   */
-  lazy val backtrack = propagate
-  protected var newAssignments: Map[String, (Boolean, Long, Option[List[String]])] = null
-  protected var value: TripleValueBoolean = null
+  private lazy val backtrack = propagate
+  private var newAssignments: Map[String, (Boolean, Long, Option[List[String]])] = null
+  private var value: TripleValueBoolean = null
 
-  protected def propagate: Long = {
+  private def propagate: Long = {
     if (depth == 0) {
       newAssignments = assignments
       value = TripleValueBoolean.False
