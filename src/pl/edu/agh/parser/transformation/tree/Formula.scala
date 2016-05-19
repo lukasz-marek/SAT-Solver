@@ -1,11 +1,14 @@
 package pl.edu.agh.parser.transformation.tree
 
+import scala.annotation.tailrec
+
 /**
   * Created by lmarek on 07.05.2016.
   */
 abstract class Formula {
   def literal = false
-  final def analyze(formula: String): Formula = {
+
+  protected final def analyze(formula: String): Formula = {
     if (formula.matches("[a-zA-Z0-9]*"))
       return new VariableFormula(formula)
     var depth = 0l
@@ -34,16 +37,27 @@ abstract class Formula {
       else buffer.append(symbol)
       if (depth == 0 && !(operator == null)) {
         if (operator == 'implication)
-          return new ImplicationFormula(buffer.toString(), formula.substring(buffer.size + 2))
+          return optimize(new ImplicationFormula(buffer.toString(), formula.substring(buffer.size + 2)))
         else if (operator == 'iff)
-          return new IffFormula(buffer.toString(), formula.substring(buffer.size + 3))
+          return optimize(new IffFormula(buffer.toString(), formula.substring(buffer.size + 3)))
         else if (operator == 'and)
-          return new AndFormula(buffer.toString(), formula.substring(buffer.size + 2))
+          return optimize(new AndFormula(buffer.toString(), formula.substring(buffer.size + 2)))
         else
-          return new OrFormula(buffer.toString(), formula.substring(buffer.size + 2))
+          return optimize(new OrFormula(buffer.toString(), formula.substring(buffer.size + 2)))
       }
     }
     analyze(formula.substring(1, formula.length - 1))
+  }
+
+  @tailrec
+  private def optimize(formula: Formula): Formula = formula match {
+    case x: RootFormula => optimize(x.inside)
+    case x: TwoArgFormula => {
+      val left = x.leftSide.toString
+      if (left == x.rightSide.toString) optimize(new RootFormula(left).inside)
+      else x
+    }
+    case _ => formula
   }
   def convertToCNF(): Unit = {}
 }
@@ -164,7 +178,7 @@ case class NegationFormula(formula: String) extends SingleFormula(formula) {
 
 }
 
-class RootFormula(formula: String) extends SingleFormula(formula: String) {
+case class RootFormula(formula: String) extends SingleFormula(formula: String) {
   override def toString = inside.toString
 
   override def convertToCNF(): Unit = {

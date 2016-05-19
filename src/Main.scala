@@ -6,7 +6,7 @@ import pl.edu.agh.api.SolverResponse
 object Main {
 
   def main(args: Array[String]): Unit = {
-    val formula = "(((((a<=>b)<=>c)=>d)=>e)<=>f)"
+    val formula = "(a&&b)=>c"
     val frame = new SolverResponse(formula)
     if (frame.parseFailed()) {
       println("Error: " + frame.errorCode())
