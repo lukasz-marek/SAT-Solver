@@ -13,10 +13,11 @@ final class ConflictDrivenClauseLearning
  private val assignments: Map[String, (Boolean, Long, Option[List[String]])] = Map(),
  private val depth: Long = 0
 ) {
+  private lazy val internalValue = satisfiable
+  lazy val isSatisfiable = internalValue._1
+  lazy val satisfyingAssignments = internalValue._2
 
-  lazy val isSatisfiable = satisfiable
-
-  private def satisfiable: Boolean = {
+  private def satisfiable: (Boolean, Map[String, Boolean]) = {
     var toVisit = mutable.Stack[ConflictDrivenClauseLearning]()
     toVisit.push(this)
     val sat = mutable.Set[Map[String, TripleValueBoolean]]()
@@ -27,7 +28,7 @@ final class ConflictDrivenClauseLearning
       }
       else {
         if (current.value == TripleValueBoolean.True) {
-          return true
+          return (true, current.newAssignments.map(x => (x._1, x._2._1)))
         } else {
           val left = current.left
           if (left.isDefined)
@@ -38,7 +39,7 @@ final class ConflictDrivenClauseLearning
         }
       }
     }
-    false
+    (false, null)
   }
 
   private lazy val next: Option[String] = {
