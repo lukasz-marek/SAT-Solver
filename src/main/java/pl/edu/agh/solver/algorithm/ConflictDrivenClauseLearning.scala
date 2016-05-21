@@ -123,7 +123,7 @@ final class ConflictDrivenClauseLearning
 
     def unit(clause: List[Literal]) = clause.map(_.name).filterNot(mutableAssignments.keys.toSet).length == 1
     var continue = true
-    while (clauses.count(unit(_)) > 0 && continue) {
+    while ( /*clauses.count(unit(_))> 0*/ clauses.exists(unit(_)) && continue) {
       continue = false
       for (clause <- clauses if unit(clause)) {
         val clauseValue = clause.foldLeft(TripleValueBoolean.False)(_ || _)

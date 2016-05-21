@@ -7,4 +7,6 @@ trait Facade {
 
   def isSatisfiable: Boolean
 
+  def assignments: java.util.Map[java.lang.String, java.lang.Boolean]
+
 }

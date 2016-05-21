@@ -3,6 +3,7 @@ package pl.edu.agh.rest;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.api.*;
 import pl.edu.agh.parser.transformation.CNFConverter;
+import pl.edu.agh.parser.validation.FormulaValidator;
 
 /**
  * Created by lmarek on 21.05.2016.
@@ -31,6 +32,9 @@ public class SolverController {
 
     @RequestMapping(value = "/cnf", method = RequestMethod.GET)
     public String convertToCNF(@RequestHeader(name = "formula") String formula) {
+        FormulaValidator validator = new FormulaValidator();
+        if (validator.validate(formula)._1() > 0)
+            return null;
         return new CNFConverter(formula).asCNF();
     }
 }
