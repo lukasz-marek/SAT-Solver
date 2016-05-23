@@ -2,7 +2,7 @@ package pl.edu.agh.api;
 
 import pl.edu.agh.parser.transformation.CNFConverter;
 import pl.edu.agh.parser.validation.FormulaValidator;
-import pl.edu.agh.solver.SolverFacade;
+import pl.edu.agh.solver.facades.SolverFacade;
 import scala.Tuple3;
 
 import javax.xml.bind.annotation.XmlElement;

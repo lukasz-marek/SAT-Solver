@@ -17,14 +17,23 @@ final class ConflictDrivenClauseLearning
   lazy val isSatisfiable = internalValue._1
   lazy val satisfyingAssignments = internalValue._2
 
+  private def falsified = {
+    implicit def literalToBoolean(literal: Literal): TripleValueBoolean = {
+      if (!assignments.contains(literal.name)) TripleValueBoolean.Unknown
+      else {
+        val value = if (assignments.get(literal.name).get._1) TripleValueBoolean.True else TripleValueBoolean.False
+        if (literal.negated) !value else value
+      }
+    }
+    clauses.map(_.foldLeft(TripleValueBoolean.False)(_ || _)).foldLeft(TripleValueBoolean.True)(_ && _) == TripleValueBoolean.False
+  }
   private def satisfiable: (Boolean, Map[String, Boolean]) = {
     var toVisit = mutable.Stack[ConflictDrivenClauseLearning]()
     toVisit.push(this)
-    val sat = mutable.Set[Map[String, TripleValueBoolean]]()
     while (toVisit.nonEmpty) {
       val current = toVisit.pop()
       if (current.backtrack > 0) {
-        toVisit = toVisit.filter(_.depth <= current.backtrack) //Usuwane są stany "młodsze" niż docelowy poziom nawrotu.
+        toVisit = toVisit.filterNot(_.falsified)
       }
       else {
         if (current.value == TripleValueBoolean.True) {
@@ -41,7 +50,6 @@ final class ConflictDrivenClauseLearning
     }
     (false, null)
   }
-
   private lazy val next: Option[String] = {
     val toGo = (clauses.flatten.map(_.name) -- newAssignments.keys).toList
     val assess = mutable.Map[String, Long]()
@@ -123,7 +131,7 @@ final class ConflictDrivenClauseLearning
 
     def unit(clause: List[Literal]) = clause.map(_.name).filterNot(mutableAssignments.keys.toSet).length == 1
     var continue = true
-    while ( /*clauses.count(unit(_))> 0*/ clauses.exists(unit(_)) && continue) {
+    while (clauses.exists(unit(_)) && continue) {
       continue = false
       for (clause <- clauses if unit(clause)) {
         val clauseValue = clause.foldLeft(TripleValueBoolean.False)(_ || _)
@@ -136,11 +144,11 @@ final class ConflictDrivenClauseLearning
           for (clause <- clauses if clause.foldLeft(TripleValueBoolean.False)(_ || _) == TripleValueBoolean.False) {
             val parents = clause.map(_.name).filterNot(Set(toFill.name))
             tree.addNode(toFill.name, !value, depth, parents)
-            val conflict = tree.lastUIPLearntClause
-            if (conflict.get._2.nonEmpty)
-              clauses.add(conflict.get._2)
+            val conflict = tree.learntClause
+            if (conflict.get.nonEmpty)
+              clauses.add(conflict.get)
             newAssignments = mutableAssignments.toMap
-            return conflict.get._1
+            return 1
           }
         }
       }

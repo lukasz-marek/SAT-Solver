@@ -16,27 +16,33 @@ class ImplicationGraph {
     nodes.pushAll(graph.nodes)
   }
 
-  def lastUIPLearntClause: Option[Tuple2[Long, List[Literal]]] = {
+  def learntClause: Option[List[Literal]] = {
     val deduced = nodes.filter(x => x match {
       case ImplicationNode(_, _, _, _) => true
       case _ => false
     })
     for (first <- deduced) {
       for (second <- deduced if first.label == second.label && first.assignment != second.assignment) {
-        val depth = first.depth
-        val assigned = nodes.filterNot(deduced.toSet)
-        val clauseLiterals = deduced.filter(_.depth < depth) ++ assigned.filter(_.depth <= depth)
+        val clauseLiterals = (antecedent(first) ++ antecedent(second)).distinct //deduced.filter(_.depth < depth) ++ assigned.filter(_.depth <= depth)
         implicit def booleanToSign(boolean: Boolean): Literal.Value = {
           if (boolean) Literal.NEGATIVE
           else Literal.POSITIVE
         }
-        val newClause = clauseLiterals.map(node => new Literal(node.label, node.assignment)).toList
-        val levels = clauseLiterals.map(_.depth).filter(_ < depth)
-        val level = if (levels.nonEmpty) levels.max else 1
-        return Option((level, newClause))
+        val newClause = clauseLiterals.map(node => new Literal(node.label, node.assignment)).sorted
+        return Option(newClause)
       }
     }
     None
+  }
+
+  private def antecedent(conflict: Node): List[Node] = conflict match {
+    case x: AssignmentNode => List(x)
+    case x: ImplicationNode => {
+      val queue = scala.collection.mutable.Queue[List[Node]]()
+      for (node <- nodes.filter(y => x.parents.contains(y.label)))
+        queue.enqueue(antecedent(node))
+      queue.flatten.toList.distinct
+    }
   }
 
   /*

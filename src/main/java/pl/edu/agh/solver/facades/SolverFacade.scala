@@ -1,4 +1,4 @@
-package pl.edu.agh.solver
+package pl.edu.agh.solver.facades
 
 import pl.edu.agh.parser.transformation.ConjunctiveNormalFormParser
 import pl.edu.agh.solver.algorithm.ConflictDrivenClauseLearning

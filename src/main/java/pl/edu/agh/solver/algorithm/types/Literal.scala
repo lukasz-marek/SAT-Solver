@@ -8,7 +8,7 @@ object Literal extends Enumeration {
   val POSITIVE, NEGATIVE = Value
 }
 
-class Literal(val name: String, val sign: Literal.Value) {
+class Literal(val name: String, val sign: Literal.Value) extends Ordered[Literal] {
   private def opposite = if (sign == Literal.POSITIVE) Literal.NEGATIVE else Literal.POSITIVE
 
   def unary_! = new Literal(name, opposite)
@@ -25,4 +25,6 @@ class Literal(val name: String, val sign: Literal.Value) {
       case _ => false
     }
   }
+
+  def compare(that: Literal): Int = (this.name, this.sign) compare(that.name, that.sign)
 }

@@ -1,4 +1,4 @@
-package pl.edu.agh.solver
+package pl.edu.agh.solver.facades
 
 /**
   * Created by lmarek on 30.04.2016.
