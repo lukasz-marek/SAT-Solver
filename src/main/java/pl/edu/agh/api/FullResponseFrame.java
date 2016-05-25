@@ -1,5 +1,7 @@
 package pl.edu.agh.api;
 
+import java.util.Map;
+
 /**
  * Created by lmarek on 17.05.2016.
  */
@@ -19,4 +21,6 @@ public interface FullResponseFrame {
     String givenFormula();
 
     String fomulaAsCNF();
+
+    Map<String, Boolean> satisfyingAssignments();
 }

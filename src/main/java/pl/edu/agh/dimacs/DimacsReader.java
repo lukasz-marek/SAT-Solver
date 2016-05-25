@@ -43,7 +43,7 @@ public class DimacsReader {
             if (!found)
                 return null;
             while ((line = reader.readLine()) != null) {
-                line = line.trim();
+                line = line.replaceAll("\t", " ").trim();
                 if (line.startsWith("c"))
                     continue;
                 while (!line.endsWith(" 0")) {

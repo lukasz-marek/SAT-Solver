@@ -148,6 +148,7 @@ final class ConflictDrivenClauseLearning
             if (conflict.get.nonEmpty)
               clauses.add(conflict.get)
             newAssignments = mutableAssignments.toMap
+            this.value = TripleValueBoolean.False
             return 1
           }
         }

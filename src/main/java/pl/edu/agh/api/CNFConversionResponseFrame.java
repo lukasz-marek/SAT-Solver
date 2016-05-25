@@ -5,4 +5,16 @@ package pl.edu.agh.api;
  */
 public interface CNFConversionResponseFrame {
 
+    boolean parseFailed();
+
+    int errorCode();
+
+    char parserGotInstead();
+
+    long parserErrorPosition();
+
+    String givenFormula();
+
+    String fomulaAsCNF();
+
 }

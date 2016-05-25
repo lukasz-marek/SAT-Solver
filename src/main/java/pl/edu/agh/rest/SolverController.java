@@ -1,9 +1,10 @@
 package pl.edu.agh.rest;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.api.*;
-import pl.edu.agh.parser.transformation.CNFConverter;
-import pl.edu.agh.parser.validation.FormulaValidator;
 
 /**
  * Created by lmarek on 21.05.2016.
@@ -12,16 +13,12 @@ import pl.edu.agh.parser.validation.FormulaValidator;
 public class SolverController {
 
     @RequestMapping(value = "/sat/full", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    FullResponseFrame fullSolve(@RequestHeader(name = "formula") String formula) {
+    public FullResponseFrame fullSolve(@RequestHeader(name = "formula") String formula) {
         return new SolverFullResponse(formula);
     }
 
     @RequestMapping(value = "/sat", method = RequestMethod.GET)
-    public
-    @ResponseBody
-    SATResponseFrame satSolve(@RequestHeader(name = "formula") String formula) {
+    public SATResponseFrame satSolve(@RequestHeader(name = "formula") String formula) {
         return new SATResponse(formula);
     }
 
@@ -31,10 +28,7 @@ public class SolverController {
     }
 
     @RequestMapping(value = "/cnf", method = RequestMethod.GET)
-    public String convertToCNF(@RequestHeader(name = "formula") String formula) {
-        FormulaValidator validator = new FormulaValidator();
-        if (validator.validate(formula)._1() > 0)
-            return null;
-        return new CNFConverter(formula).asCNF();
+    public CNFConversionResponseFrame convertToCNF(@RequestHeader(name = "formula") String formula) {
+        return new CNFConversionResponse(formula);
     }
 }
