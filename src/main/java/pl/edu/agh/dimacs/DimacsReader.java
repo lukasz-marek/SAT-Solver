@@ -32,7 +32,7 @@ public class DimacsReader {
             long nbvars = 0, nbclauses = 0;
             boolean found = false;
             while (!found && (line = reader.readLine()) != null) {
-                line = line.toLowerCase().trim();
+                line = line.toLowerCase().replaceAll("\t", " ").trim();
                 if (line.matches("p cnf [0-9]+ [0-9]+")) {
                     String[] params = line.split("\\s+");
                     nbvars = Long.parseLong(params[2]);
@@ -48,8 +48,11 @@ public class DimacsReader {
                     continue;
                 while (!line.endsWith(" 0")) {
                     String secondLine = reader.readLine();
-                    if (secondLine != null)
-                        line += " " + secondLine.trim();
+                    if (secondLine != null) {
+                        if (line.startsWith("c"))
+                            continue;
+                        line += " " + secondLine.replaceAll("\t'", " ").trim();
+                    }
                     else
                         break;
                 }
@@ -57,10 +60,10 @@ public class DimacsReader {
                 if (!clause.isEmpty())
                     clauses.add(clause);
             }
-            // if(clauses.size() == nbclauses)
-            return clauses;
-            //else
-            //  return null;
+            if (clauses.size() == nbclauses)
+                return clauses;
+            else
+                return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
