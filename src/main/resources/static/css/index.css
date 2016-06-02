@@ -1,0 +1,16 @@
+body {
+
+    margin: 0;
+    background: orange;
+}
+h1 {
+    text-align: center;
+}
+.button {
+    text-align: center;
+}
+.conteiner {
+
+    margin-top: 50px;
+
+}
