@@ -4,7 +4,6 @@
 $(document).ready(function () {
     $("button").on("click", function () {
         var formula = $("#formula").val();
-        console.log(formula);
         sat(formula);
     });
 });
@@ -16,7 +15,8 @@ function sat(form) {
         url: 'http://localhost:8080/sat',
         headers: { formula : form }
     }).done(function(res){
-        alert("succes?   "+res.satisfiable);
+        $(".list").append("<li> formula: "+form+ "  satisfiable: "+ res.satisfiable +" </li>");
+
     });
 
 
