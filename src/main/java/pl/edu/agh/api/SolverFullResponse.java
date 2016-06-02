@@ -75,7 +75,7 @@ public class SolverFullResponse implements FullResponseFrame {
     }
 
     public SolverFullResponse() {
-        this(null);
+        this("");
     }
 
     public boolean isSatisfiable() {
