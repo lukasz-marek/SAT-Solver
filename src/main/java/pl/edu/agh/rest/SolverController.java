@@ -1,9 +1,6 @@
 package pl.edu.agh.rest;
 
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.api.*;
 
 /**
@@ -18,7 +15,7 @@ public class SolverController {
     }
 
     @RequestMapping(value = "/sat", method = RequestMethod.GET, produces = "application/json")
-    public SATResponseFrame satSolve(@RequestHeader(name = "formula") String formula) {
+    public @ResponseBody SATResponseFrame satSolve(@RequestHeader(name = "formula") String formula) {
         return new SATResponse(formula);
     }
 

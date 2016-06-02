@@ -13,25 +13,15 @@ import java.util.Map;
 /**
  * Created by lmarek on 21.05.2016.
  */
-@XmlRootElement(name = "response")
 public class SATResponse implements SATResponseFrame {
-    @XmlTransient
     protected final static FormulaValidator validator = new FormulaValidator();
-    @XmlElement(name = "input")
     protected final String formula;
-    @XmlElement(name = "cnf")
     protected final String asCNF;
-    @XmlElement(name = "satisfiable")
     protected final boolean satisfiable;
-    @XmlElement(name = "parse_failed")
     protected final boolean parseFailed;
-    @XmlElement(name = "error_code")
     protected final int errorCode;
-    @XmlElement(name = "misplaced_symbol")
     protected final char parserGotInstead;
-    @XmlElement(name = "error_position")
     protected final long parserErrorPosition;
-    @XmlElement(name = "satisfying_assignments")
     protected final Map<String, Boolean> assignments;
 
     public boolean isSatisfiable() {
@@ -88,6 +78,6 @@ public class SATResponse implements SATResponseFrame {
     }
 
     public SATResponse() {
-        this(null);
+        this("");
     }
 }
