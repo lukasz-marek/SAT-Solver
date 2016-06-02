@@ -16,7 +16,8 @@ public class SolverController {
 
     @RequestMapping(value = "/sat", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody SATResponseFrame satSolve(@RequestHeader(name = "formula") String formula) {
-        return new SATResponse(formula);
+        SATResponse response = new SATResponse(formula);
+        return response;
     }
 
     @RequestMapping(value = "/sat/dimacs", method = RequestMethod.GET)
