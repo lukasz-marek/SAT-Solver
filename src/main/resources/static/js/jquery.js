@@ -9,6 +9,7 @@ $(document).ready(function () {
     $("button").on("click", function () {
         if (this.id == "submit") {
             var formula = $("#formula").val();
+            $(".head-button").children().hide();
             sat(formula);
             $(".answer").show();
         }else{
@@ -16,10 +17,8 @@ $(document).ready(function () {
             console.log("p."+this.id);
             $("p#"+this.id).show();
         }
-
     });
 });
-
 
 function sat(form) {
     $.ajax({
@@ -27,11 +26,9 @@ function sat(form) {
         url: 'http://localhost:8080/sat',
         headers: { formula : form }
     }).done(function(res){
-
         if(res.parseFailed == true){
            alert("error Code "+ res.errorCode +"  parser got instead " +
                ""+res.parserGotInstead + " error position " + res.parserErrorPosition )
-
         }else {
             $("button#form").show();
             $("p#form").text(res.formula);
@@ -48,10 +45,7 @@ function sat(form) {
                 $("p#assig").text(assignment(res.assignments));
             };
         };
-
     });
-
-
 };
 
 function assignment(assig){
