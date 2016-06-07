@@ -2,9 +2,21 @@
  * Created by Tomek on 02.06.2016.
  */
 $(document).ready(function () {
+    $(".answer").hide();
+    $(".head-button").children().hide();
+    $(".con").children().hide();
+    console.log("dziala");
     $("button").on("click", function () {
-        var formula = $("#formula").val();
-        sat(formula);
+        if (this.id == "submit") {
+            var formula = $("#formula").val();
+            sat(formula);
+            $(".answer").show();
+        }else{
+            $(".con").children().hide();
+            console.log("p."+this.id);
+            $("p#"+this.id).show();
+        }
+
     });
 });
 
@@ -21,16 +33,22 @@ function sat(form) {
                ""+res.parserGotInstead + " error position " + res.parserErrorPosition )
 
         }else {
+            $("button#form").show();
+            $("p#form").text(res.formula);
 
-            if(res.satisfable == true) {
-                $(".list").append("<li>satisfable: " + res.satisfable + " " + "formula: " + res.formula + " asCNF: " +
-                    "" + res.asCNF + " " + assignment(res.assignments) + " </li>");
-            }else{
-                $(".list").append("<li>satisfable: " + res.satisfable + " " + "formula: " + res.formula + " asCNF: " +
-                    "" + res.asCNF + "</li>");
+            $("button#cnf").show();
+            $("p#cnf").text(res.asCNF);
 
-            }
+
+            $("span#satis").text("satisfiable: " + res.satisfiable);
+            $("span#satis").show();
+            if(res.satisfiable == true) {
+
+                $("button#assig").show();
+                $("p#assig").text(assignment(res.assignments));
+            };
         };
+
     });
 
 
