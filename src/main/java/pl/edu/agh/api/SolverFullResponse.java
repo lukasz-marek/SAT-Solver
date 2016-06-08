@@ -1,5 +1,7 @@
 package pl.edu.agh.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import pl.edu.agh.parser.transformation.CNFConverter;
 import pl.edu.agh.parser.validation.FormulaValidator;
 import pl.edu.agh.solver.facades.SolverFacade;
@@ -13,29 +15,28 @@ import java.util.Map;
 /**
  * Created by lmarek on 17.05.2016.
  */
-@XmlRootElement(name = "response")
+@JsonRootName("response")
 public class SolverFullResponse implements FullResponseFrame {
-    @XmlTransient
     protected final static FormulaValidator validator = new FormulaValidator();
-    @XmlElement(name = "input")
+    @JsonProperty
     protected final String formula;
-    @XmlElement(name = "cnf")
+    @JsonProperty
     protected final String asCNF;
-    @XmlElement(name = "satisfiable")
+    @JsonProperty
     protected final boolean satisfiable;
-    @XmlElement(name = "tautology")
+    @JsonProperty
     protected final boolean tautology;
-    @XmlElement(name = "parse_failed")
+    @JsonProperty
     protected final boolean parseFailed;
-    @XmlElement(name = "error_code")
+    @JsonProperty
     protected final int errorCode;
-    @XmlElement(name = "misplaced_symbol")
+    @JsonProperty
     protected final char parserGotInstead;
-    @XmlElement(name = "error_position")
+    @JsonProperty
     protected final long parserErrorPosition;
-    @XmlElement(name = "satisfying_assignments")
+    @JsonProperty
     protected final Map<String, Boolean> satAssignments;
-    @XmlElement(name = "unsatisfying_assignments")
+    @JsonProperty
     protected final Map<String, Boolean> unsatAssignments;
     public SolverFullResponse(String formula) {
         Tuple3<Integer, Object, Object> validation = validator.validate(formula);

@@ -1,5 +1,7 @@
 package pl.edu.agh.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import pl.edu.agh.parser.transformation.CNFConverter;
 import pl.edu.agh.parser.validation.FormulaValidator;
 
@@ -9,19 +11,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Created by lmarek on 24.05.2016.
  */
-@XmlRootElement(name = "response")
+@JsonRootName("response")
 public class CNFConversionResponse implements CNFConversionResponseFrame {
-    @XmlElement(name = "input")
+    @JsonProperty
     protected final String input;
-    @XmlElement(name = "cnf")
+    @JsonProperty
     protected final String cnf;
-    @XmlElement(name = "parse_failed")
+    @JsonProperty
     protected final boolean failed;
-    @XmlElement(name = "error position")
+    @JsonProperty
     protected final long errorPosition;
-    @XmlElement(name = "error_code")
+    @JsonProperty
     protected final int errorCode;
-    @XmlElement(name = "parser_got_instead")
+    @JsonProperty
     protected final char gotInstead;
 
     public CNFConversionResponse(String formula) {
