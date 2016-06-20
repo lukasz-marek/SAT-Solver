@@ -17,7 +17,7 @@ class DimacsFacade(dimacs: java.io.File) extends Facade {
   override lazy val isSatisfiable: scala.Boolean = if (inner == null) false else inner.isSatisfiable
   override lazy val assignments: util.Map[String, Boolean] = if (inner == null) null else mapAsJavaMap(inner.satisfyingAssignments).asInstanceOf[java.util.Map[java.lang.String, java.lang.Boolean]]
   private lazy val inner = solve()
-
+  lazy val failed = inner == null
   private def solve(): ConflictDrivenClauseLearning = {
     val reader = new DimacsReader(dimacs)
     val clauses = reader.read()
