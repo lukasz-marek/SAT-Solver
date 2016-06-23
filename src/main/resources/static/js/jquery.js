@@ -114,6 +114,9 @@ function show_sat(res){
         alert("Error name: "+ map_error(res.errorCode) +"  parser got instead " +
             ""+res.parserGotInstead + " error position " + res.parserErrorPosition )
     }else {
+
+        $(".answer").show();
+
         $("button#form").show();
         $("p#form").text(res.formula);
 
@@ -136,7 +139,8 @@ function show_sat(res){
             ""+res.parserGotInstead + " error position " + res.parserErrorPosition )
     }else {
         if(res.satisfiable == true) {
-
+            $("span#satis").text("satisfiable: " + res.satisfiable);
+            $("span#satis").show();
             $("button#assig").show();
             $("p#assig").text(assignment(res.assignments));
             $("p#assig").show();
