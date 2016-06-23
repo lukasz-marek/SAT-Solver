@@ -54,7 +54,7 @@ $(document).ready(function () {
             var formula = $("#formula").val();
             $(".head-button").children().hide();
             sat(formula);
-            $(".answer").show();
+
         }else{
             $(".con").children().hide();
             console.log("p."+this.id);
@@ -127,6 +127,7 @@ function show_sat(res){
 
             $("button#assig").show();
             $("p#assig").text(assignment(res.assignments));
+            $(".answer").show();
         };
     };
 }function show_file(res){
@@ -139,6 +140,7 @@ function show_sat(res){
             $("button#assig").show();
             $("p#assig").text(assignment(res.assignments));
             $("p#assig").show();
+            $(".answer").show();
         };
     };
 }
