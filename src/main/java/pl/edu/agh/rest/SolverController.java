@@ -3,7 +3,6 @@ package pl.edu.agh.rest;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.edu.agh.api.*;
 
 import java.io.BufferedOutputStream;
@@ -39,7 +38,7 @@ public class SolverController {
     }
 
     @RequestMapping(value = "/sat/dimacs", method = RequestMethod.POST)
-    public DIMACSResponseFrame handleFileUpload(@RequestParam("name") String name,
+    public DIMACSResponseFrame handleFileUpload(@RequestParam(value = "name") String name,
                                                 @RequestParam("file") MultipartFile file) {
         File source;
         try {
