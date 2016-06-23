@@ -38,8 +38,7 @@ public class SolverController {
     }
 
     @RequestMapping(value = "/sat/dimacs", method = RequestMethod.POST)
-    public DIMACSResponseFrame handleFileUpload(@RequestParam(value = "name") String name,
-                                                @RequestParam("file") MultipartFile file) {
+    public DIMACSResponseFrame handleFileUpload(@RequestParam("file") MultipartFile file) {
         File source;
         try {
             source = File.createTempFile("dimacs", ".cnf");
@@ -47,7 +46,7 @@ public class SolverController {
                     new FileOutputStream(source));
             FileCopyUtils.copy(file.getInputStream(), stream);
             stream.close();
-            DimacsResponse response = new DimacsResponse(source,name);
+            DimacsResponse response = new DimacsResponse(source,source.getName());
             source.delete();
             return response;
 
