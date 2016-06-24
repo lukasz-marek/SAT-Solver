@@ -15,7 +15,7 @@ import scala.collection.JavaConversions._
   */
 class DimacsFacade(dimacs: java.io.File) extends Facade {
   override lazy val isSatisfiable: scala.Boolean = if (inner == null) false else inner.isSatisfiable
-  override lazy val assignments: util.Map[String, Boolean] = if (inner == null) null else mapAsJavaMap(inner.satisfyingAssignments).asInstanceOf[java.util.Map[java.lang.String, java.lang.Boolean]]
+  override lazy val assignments: util.Map[String, Boolean] = if (inner == null || !isSatisfiable) null else mapAsJavaMap(inner.satisfyingAssignments).asInstanceOf[java.util.Map[java.lang.String, java.lang.Boolean]]
   private lazy val inner = solve()
   lazy val failed = inner == null
   private def solve(): ConflictDrivenClauseLearning = {
@@ -23,7 +23,7 @@ class DimacsFacade(dimacs: java.io.File) extends Facade {
     val clauses = reader.read()
     if (clauses == null)
       return null
-    val asScala = JavaConversions.asScalaSet(clauses).map(_.toList) //.filterNot(_.size == 0)
+    val asScala = JavaConversions.asScalaSet(clauses).map(_.toList)
     new ConflictDrivenClauseLearning(asScala)
   }
 
